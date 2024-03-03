@@ -8,7 +8,6 @@ let sidebar = document.querySelector(".left-box");
 let playbar = document.querySelector(".playbar");
 let currFolder;
 
-
 hamburger.addEventListener("click", () => {
     if (sidebar.style.display === "block") {
         sidebar.style.display = "none";
@@ -25,7 +24,7 @@ hamburger.addEventListener("click", () => {
     // playbar.style.width = playbar.style.width === "100%" ? "80vw" : "100%";
 });
 document.addEventListener('touchstart', function (e) {
-    console.log(e.target);
+    // console.log(e.target);
     if (!sidebar.contains(e.target)) {
         sidebar.style.display = 'none';
     }
@@ -46,7 +45,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    let a = await fetch(`http://192.168.34.217:61612/${folder}/`);
+    let a = await fetch(`http://192.168.33.234:50570/${folder}/`);
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -101,7 +100,7 @@ const playMusic = (track, pause = false) => {
 }
 
 async function displayAlbums() {
-    let a = await fetch(`http://192.168.34.217:61612/songs/`);
+    let a = await fetch(`http://192.168.33.234:50570/songs/`);
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -113,10 +112,10 @@ async function displayAlbums() {
 
         if (e.href.includes("/songs")) {
             let folder = e.href.split("/songs/")[1];
-            // console.log(folder)
-            let a = await fetch(`http://192.168.34.217:61612/songs/${folder}/info.json`);
-            let response = await a.text();
-            console.log(response);
+            console.log(folder)
+            let a = await fetch(`http://192.168.33.234:50570/songs/dawnfm/info.json`);
+            let response = await a.json();
+            // console.log(response)
             cardContainer.innerHTML = cardContainer.innerHTML + `
             <div data-folder="${folder}" class="card">
                 <img src="/songs/${folder}/cover.jpg" alt="">
