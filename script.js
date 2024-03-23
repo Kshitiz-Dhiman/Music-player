@@ -8,6 +8,7 @@ let sidebar = document.querySelector(".left-box");
 let playbar = document.querySelector(".playbar");
 let currFolder;
 
+// hanb
 hamburger.addEventListener("click", () => {
     if (sidebar.style.display === "block") {
         sidebar.style.display = "none";
@@ -23,12 +24,16 @@ hamburger.addEventListener("click", () => {
     // sidebar.style.width = sidebar.style.width === "0px" ? "20vw" : "0px";
     // playbar.style.width = playbar.style.width === "100%" ? "80vw" : "100%";
 });
+
+// 
 document.addEventListener('touchstart', function (e) {
     // console.log(e.target);
     if (!sidebar.contains(e.target)) {
         sidebar.style.display = 'none';
     }
 });
+
+
 function secondsToMinutesSeconds(seconds) {
     if (isNaN(seconds) || seconds < 0) {
         return "00:00";
@@ -45,7 +50,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    let a = await fetch(`http://192.168.34.217:61612/${folder}/`);
+    let a = await fetch(`http://127.0.0.1:5500/${folder}/`);
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -53,7 +58,7 @@ async function getSongs(folder) {
     songs = [];
     for (let i = 0; i < as.length; i++) {
         const element = as[i];
-        if (element.href.endsWith(".mp3")) {
+        if (element.href.endsWith(".mp3.preview")) {
             songs.push(element.href.split(`/${folder}/`)[1]);
         }
     }
@@ -100,7 +105,7 @@ const playMusic = (track, pause = false) => {
 }
 
 async function displayAlbums() {
-    let a = await fetch(`http://192.168.34.217:61612/songs/`);
+    let a = await fetch(`http://127.0.0.1:5500/songs/`);
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -110,12 +115,13 @@ async function displayAlbums() {
         for (let index = 0; index < array.length; index++) {
             const e = array[index];
 
-        if (e.href.includes("/songs")) {
+          let indexOfSongs = e.href.indexOf("/songs");
+
+          if (indexOfSongs !== -1 && indexOfSongs + 6 !== e.href.length) {
             let folder = e.href.split("/songs/")[1];
-            // console.log(folder)
-            let a = await fetch(`http://192.168.34.217:61612/songs/${folder}/info.json`);
-            let response = await a.text();
-            console.log(response);
+            let a = await fetch(`http://127.0.0.1:5500/songs/${folder}/info.json`);
+            let response = await a.json();
+
             cardContainer.innerHTML = cardContainer.innerHTML + `
             <div data-folder="${folder}" class="card">
                 <img src="/songs/${folder}/cover.jpg" alt="">
@@ -123,7 +129,7 @@ async function displayAlbums() {
                 <p>${response.description}</p>
                 <div class="play">
                     <span class="material-symbols-outlined" style="color: black; font-weight: bold;
-                    font-size: 25x;">
+                    font-size: 25px;">
                         play_arrow
                     </span>
                 </div>
@@ -141,6 +147,8 @@ async function displayAlbums() {
 
 async function main() {
     await getSongs("songs/tame-impala");
+
+    // console.log()
 
     playMusic(songs[0], true);
 
